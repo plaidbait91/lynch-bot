@@ -238,9 +238,8 @@ inputs:
     required: false
     description: 'The icon for the bot'
     default: '<img src="https://avatars.githubusercontent.com/in/347564?s=41" alt="Image description" width="20" height="20">'
-  env:
-    GITHUB_TOKEN: {{ secrets.TOKEN }}
-    OPENAI_API_KEY: {{ secrets.OPENAI_API_KEY }}
+  GITHUB_TOKEN: {{ secrets.TOKEN }}
+  OPENAI_API_KEY: {{ secrets.OPENAI_API_KEY }}
 runs:
   using: 'node16'
   main: 'dist/index.js'
