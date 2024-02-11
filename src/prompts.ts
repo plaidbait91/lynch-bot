@@ -1,10 +1,17 @@
-import { type Inputs } from './inputs'
+import {type Inputs} from './inputs'
 
 export class Prompts {
   summarize: string
   summarizeReleaseNotes: string
+  codebaseInfo: string
+  customReviewInstructions: string
 
-  summarizeFileDiff = `## GitHub PR Title
+  summarizeFileDiffPrefix = `## Codebase overview
+
+`
+  summarizeFileDiff = `
+
+## GitHub PR Title
 
 \`$title\` 
 
@@ -83,7 +90,7 @@ Instructions:
 - The summary should not exceed 500 words.
 `
 
-  reviewFileDiff = `## GitHub PR Title
+  reviewFileDiffPrefix = `## GitHub PR Title
 
 \`$title\` 
 
@@ -106,15 +113,17 @@ Additional Context: PR title, description, summaries and comment chains.
 Task: Review new hunks for substantive issues using provided context and respond with comments if necessary.
 Output: Review comments in markdown with exact line number ranges in new hunks. Start and end line numbers must be within the same hunk. For single-line comments, start=end line number. Must use example response format below.
 Use fenced code blocks using the relevant language identifier where applicable.
-Don't annotate code snippets with line numbers. Format and indent code correctly.
-Do not use \`suggestion\` code blocks.
-For fixes, use \`diff\` code blocks, marking changes with \`+\` or \`-\`. The line number range for comments with fix snippets must exactly match the range to replace in the new hunk.
+`
+  reviewFileDiff = `For fixes, use \`diff\` code blocks, marking changes with \`+\` or \`-\`. The line number range for comments with fix snippets must exactly match the range to replace in the new hunk.
 
 - Do NOT provide general feedback, summaries, explanations of changes, or praises 
   for making good additions. 
 - Focus solely on offering specific, objective insights based on the 
   given context and refrain from making broad comments about potential impacts on 
   the system or question intentions behind the changes.
+- Do NOT exceed 30-40 words in your review (EXCLUDING any code in the \`diff\` block).
+  Be concise and to-the-point so that the PR author can quickly understand the 
+  comment and take necessary action.
 
 If there are no issues found on a line range, you SHOULD ignore it and make NO reference to it in the review section.
 
@@ -232,16 +241,24 @@ $comment
 \`\`\`
 `
 
-  constructor(summarize = '', summarizeReleaseNotes = '') {
+  constructor(
+    summarize = '',
+    summarizeReleaseNotes = '',
+    codebaseInfo = '',
+    customReviewInstructions = ''
+  ) {
     this.summarize = summarize
     this.summarizeReleaseNotes = summarizeReleaseNotes
+    this.codebaseInfo = codebaseInfo
+    this.customReviewInstructions = customReviewInstructions
   }
 
   renderSummarizeFileDiff(
     inputs: Inputs,
     reviewSimpleChanges: boolean
   ): string {
-    let prompt = this.summarizeFileDiff
+    let prompt =
+      this.summarizeFileDiffPrefix + this.codebaseInfo + this.summarizeFileDiff
     if (reviewSimpleChanges === false) {
       prompt += this.triageFileDiff
     }
@@ -272,6 +289,10 @@ $comment
   }
 
   renderReviewFileDiff(inputs: Inputs): string {
-    return inputs.render(this.reviewFileDiff)
+    const prompt =
+      this.reviewFileDiffPrefix +
+      this.customReviewInstructions +
+      this.reviewFileDiff
+    return inputs.render(prompt)
   }
 }

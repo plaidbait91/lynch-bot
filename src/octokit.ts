@@ -1,12 +1,12 @@
-import { getInput, warning } from '@actions/core'
-import { Octokit } from '@octokit/action'
+import {getInput, warning} from '@actions/core'
+import {Octokit} from '@octokit/action'
 // import { retry } from '@octokit/plugin-retry'
 // import { throttling } from '@octokit/plugin-throttling'
 
 const token = getInput('token') || process.env.INPUT_GITHUB_TOKEN
 
 export const octokit = new Octokit({
-  auth: `token ${token}`,
+  auth: `token ${token}`
 })
 
 // export const octokit = new RetryAndThrottlingOctokit({
