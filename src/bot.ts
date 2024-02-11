@@ -1,6 +1,6 @@
 import './fetch-polyfill'
 
-import {info, setFailed, warning} from '@actions/core'
+import { info, setFailed, warning } from '@actions/core'
 import {
   ChatGPTAPI,
   ChatGPTError,
@@ -9,7 +9,7 @@ import {
   // eslint-disable-next-line import/no-unresolved
 } from 'chatgpt'
 import pRetry from 'p-retry'
-import {OpenAIOptions, Options} from './options'
+import { OpenAIOptions, Options } from './options'
 
 // define type to save parentMessageId and conversationId
 export interface Ids {
@@ -99,8 +99,7 @@ IMPORTANT: Entire response must be in the language with ISO code: ${options.lang
       const end = Date.now()
       info(`response: ${JSON.stringify(response)}`)
       info(
-        `openai sendMessage (including retries) response time: ${
-          end - start
+        `openai sendMessage (including retries) response time: ${end - start
         } ms`
       )
     } else {
