@@ -24,7 +24,7 @@ export class Bot {
 
   constructor(options: Options, openaiOptions: OpenAIOptions) {
     this.options = options
-    if (process.env.INPUT_OPENAI_API_KEY) {
+    if (process.env.OPENAI_API_KEY || process.env.INPUT_OPENAI_API_KEY) {
       const currentDate = new Date().toISOString().split('T')[0]
       const systemMessage = `${options.systemMessage} 
 Knowledge cutoff: ${openaiOptions.tokenLimits.knowledgeCutOff}
@@ -36,7 +36,7 @@ IMPORTANT: Entire response must be in the language with ISO code: ${options.lang
       this.api = new ChatGPTAPI({
         apiBaseUrl: options.apiBaseUrl,
         systemMessage,
-        apiKey: process.env.INPUT_OPENAI_API_KEY,
+        apiKey: (process.env.OPENAI_API_KEY ?? process.env.INPUT_OPENAI_API_KEY) ?? '',
         apiOrg: process.env.OPENAI_API_ORG ?? undefined,
         debug: options.debug,
         maxModelTokens: openaiOptions.tokenLimits.maxTokens,
